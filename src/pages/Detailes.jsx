@@ -3,26 +3,31 @@ import Header from "../components/Header";
 import left from "../assets/images/left.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import http from "../utils/axios";
+import { Loader } from "../components/Loader";
 
 function Detailes() {
   const [country, setCountry] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const slug = location.pathname.split("/")[2];
-  console.log(country);
+  const slug1 = location.pathname.split("/")[2];
+   
 
   useEffect(() => {
-    http(`/countries/${slug}`)
+    http(`/countries/${slug1}`)
       .then((response) => {
         setCountry(response.data);
       })
       .catch((error) => {
         console.error("Error fetching country data:", error);
       });
-  }, [slug]);
+  }, [slug1]);
 
   if (!country) {
-    return <div>Loading...</div>; // Show loading indicator while data is being fetched
+    return (
+      <div className="m-10">
+        <Loader />
+      </div>
+    );
   }
 
   return (
@@ -36,33 +41,39 @@ function Detailes() {
         <div className="about flex flex-row flex-wrap gap-5">
           <img
             src={country.flags?.svg}
-            className="w-full md:w-2/5"
+            className="w-11/12 mx-auto md:w-2/5"
             alt={`${country.name?.common} flag`}
           />
-          <div className="country-info pt-5 flex">
-            <div className="first">
-              <h2 className="font-bold">{country.name?.common}</h2>
-              <p>Native Name: {country.name?.nativeName}</p>
-              <p>Population: {country.population.toLocaleString()}</p>
-              <p>Region: {country.region}</p>
-              <p>Subregion: {country.subregion}</p>
-              <p>Capital: {country.capital?.join(", ")}</p>
+          <div className="country-info pt-5 flex flex-col">
+            <div className="flex flex-row flex-wrap">
+              <div className="first">
+                <h2 className="font-bold">{country.name?.common}</h2>
+                <p><span className="font-bold">Native Name:</span> {country.name.nativeName}</p>
+                <p><span className="font-bold">Population:</span> {country.population}</p>
+                <p><span className="font-bold">Region:</span> {country.region}</p>
+                <p><span className="font-bold">Subregion:</span> {country.subregion}</p>
+                <p><span className="font-bold">Capital:</span> {country.capital}</p>
+              </div>
+              <div className="second  md:mt-16">
+                <p>Top Level Domain: {country.tld}</p>
+                <p>Currencies:{country.currencies[0]}</p>
+                <p>
+                  Languages: {Object.values(country.languages || {}).join(", ")}
+                </p>
+              </div>
             </div>
-            <div className="second  md:mt-16">
-              <p>Top Level Domain: {country.tld?.join(", ")}</p>
-              <p>
-                Currencies:{country.currencies[0]}
-              </p>
-              <p>
-                Languages: {Object.values(country.languages || {}).join(", ")}
-              </p>
-            </div>
-            <br />
-            <div className="borderCountries">
-                
+
+            <div className="borderCountries mt-5">
+              <p className="me-3">Border Countries:</p>
+              <div>
+               {/* {
+                country.borders ? country.borders.map((val, index)=>(
+                    <button key={index}>{val}</button>
+                )) : "No Borders"
+               } */}
+              </div>
             </div>
           </div>
-         
         </div>
       </div>
     </div>
