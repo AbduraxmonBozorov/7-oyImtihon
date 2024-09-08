@@ -1,12 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Country({ country }) {
+  const navigate=useNavigate();
 
-    console.log(country);
     
     function handleCountry(e){
         console.log(country.name.slug);
-        
+        navigate(`/detailes/${country.name.slug}`);
     }
   return (
     <div
